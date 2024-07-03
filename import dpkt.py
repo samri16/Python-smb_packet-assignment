@@ -1,4 +1,4 @@
-import dpkt
+import dpkt 
 import socket
 import os
 import json
@@ -10,7 +10,7 @@ def parse_smb_packet(packet):
         tcp = ip.data
         smb = dpkt.smb.SMB(tcp.data)
 
-        if smb.cmd == dpkt.smb.SMB_COM_WRITE:
+        if smb.com == 0x0B:  # SMB_COM_WRITE
             # Extract attachment metadata
             file_name = f"file{len(smb.payload)}.doc"
             file_size = len(smb.payload)
@@ -54,5 +54,5 @@ def parse_smb_packet(packet):
 # Read the PCAP file
 with open('smb.pcap', 'rb') as f:
     pcap = dpkt.pcap.Reader(f)
-    for timestamp, buf in pcap:
-        parse_smb_packet(buf)
+    for timestamp, packet in pcap:
+        parse_smb_packet(packet)
